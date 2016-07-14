@@ -1,0 +1,32 @@
+[ed-view]{
+    width: 100%;
+    height: 100%;
+}
+
+.table{
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.vertical-align{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.welcome{
+    padding: 20px;
+}
+
+.welcome h1{
+    margin: 0;
+    font-size: 6vmin;
+}
+
+.welcome .green{
+    color: #00b700;
+}
+
+.welcome p{
+    color: grey;
+}
