@@ -83,11 +83,12 @@ function App(){
         app.inject_asset("app/"+ed_name+"/"+ed_name+".js", "js");
         app.inject_asset("app/"+ed_name+"/"+ed_name+".css", "css");
         
-        $("[ed-view]").html(view);
-        $("[ed-view]").fadeIn();
         
         var ed_func = app.get_cont_func(ed_name);
         var emeraud = eval("new "+ed_func+"(app)");
+        emeraud.init();
+        $("[ed-view]").html(app.set_values(view));
+        $("[ed-view]").fadeIn();
         emeraud.run();
         
     }
@@ -100,5 +101,11 @@ function App(){
         return app.data[key];
     }
     
+    app.set_values = function(source){
+         return source.replace(/\|\|(.*?)\|\|/g, function(match){
+             var key = match.replace(/\|\|/g, "");
+             return app.data[key];
+         });
+    }
     
 }
