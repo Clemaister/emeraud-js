@@ -7,10 +7,12 @@ function App(){
     app.load_view = function(ed_name, callback){
         
         $("[ed-view]").hide();
+        
         if(app.loaded_ed){
             app.unload_asset(app.loaded_ed, "js");
             app.unload_asset(app.loaded_ed, "css");
         }
+        
         var controller_path = "app/"+ed_name+"/";
         var javascript = false;
         var css = false;
@@ -82,7 +84,6 @@ function App(){
         app.loaded_ed = ed_name;
         app.inject_asset("app/"+ed_name+"/"+ed_name+".js", "js");
         app.inject_asset("app/"+ed_name+"/"+ed_name+".css", "css");
-        
         
         var ed_func = app.get_cont_func(ed_name);
         var emeraud = eval("new "+ed_func+"(app)");
