@@ -4,7 +4,7 @@ function App(){
     app.data = {};
     app.loaded_ed = false;
     
-    app.load_view = function(ed_name, callback){
+    app.load_view = function(ed_name){
         
         $("[ed-view]").hide();
         
@@ -13,13 +13,13 @@ function App(){
             app.unload_asset(app.loaded_ed, "css");
         }
         
-        var controller_path = "app/"+ed_name+"/";
+        var ed_path = "app/"+ed_name+"/";
         var javascript = false;
         var css = false;
         var view = false;
         
         $.ajax({
-            url: controller_path+ed_name+".js",
+            url: ed_path+ed_name+".js",
             type: "GET",
             success: function(data){
                 javascript = data;
@@ -28,7 +28,7 @@ function App(){
         });
         
         $.ajax({
-            url: controller_path+ed_name+".css",
+            url: ed_path+ed_name+".css",
             type: "GET",
             success: function(data, status, xhr){
                 css = data;
@@ -37,7 +37,7 @@ function App(){
         });
         
         $.ajax({
-            url: controller_path+ed_name+".html",
+            url: ed_path+ed_name+".html",
             type: "GET",
             success: function(data){
                 view = data;
@@ -84,13 +84,21 @@ function App(){
         app.loaded_ed = ed_name;
         app.inject_asset("app/"+ed_name+"/"+ed_name+".js", "js");
         app.inject_asset("app/"+ed_name+"/"+ed_name+".css", "css");
-        
+
         var ed_func = app.get_cont_func(ed_name);
         var emeraud = eval("new "+ed_func+"(app)");
         emeraud.init();
         $("[ed-view]").html(app.set_values(view));
         $("[ed-view]").fadeIn();
         emeraud.run();
+        
+        $("[ed-view] a").click(function(){
+            var dest = $(this).attr("href");
+            if(dest.indexOf("#ed-")>-1){
+                app.load_view(dest.replace(/#ed-/, ""));
+            }
+            return false;
+        });
         
     }
     
@@ -104,8 +112,15 @@ function App(){
     
     app.set_values = function(source){
          return source.replace(/\|\|(.*?)\|\|/g, function(match){
+             
              var key = match.replace(/\|\|/g, "");
-             return app.data[key];
+             
+             var split = key.split(".");
+             var data_str="app.data[split[0]]";
+             split.forEach(function(subkey, i){
+                 if(i!=0) data_str+="."+subkey;
+             });             
+             return eval(data_str);
          });
     }
     
